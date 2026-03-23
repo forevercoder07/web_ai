@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="admin-layout">
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">ADMIN PANEL</div>
+            <div class="sidebar-subtitle">// portfolio.control</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+
+            <div class="nav-section-title">Content</div>
+            <a href="{{ url_for('admin_projects') }}" class="sidebar-link {% if 'project' in request.endpoint %}active{% endif %}">
+                <i class="fas fa-code"></i> Projects
+            </a>
+            <a href="{{ url_for('admin_skills') }}" class="sidebar-link {% if request.endpoint == 'admin_skills' %}active{% endif %}">
+                <i class="fas fa-chart-bar"></i> Skills
+            </a>
+            <a href="{{ url_for('admin_about') }}" class="sidebar-link {% if request.endpoint == 'admin_about' %}active{% endif %}">
+                <i class="fas fa-user"></i> About
+            </a>
+
+            <div class="nav-section-title">Communication</div>
+            <a href="{{ url_for('admin_messages') }}" class="sidebar-link {% if request.endpoint == 'admin_messages' %}active{% endif %}">
+                <i class="fas fa-envelope"></i> Messages
+                {% set unread = namespace(count=0) %}
+                {% if unread_count is defined and unread_count > 0 %}
+                <span class="badge">{{ unread_count }}</span>
+                {% endif %}
+            </a>
+
+            <div class="nav-section-title">Site</div>
+            <a href="{{ url_for('index') }}" class="sidebar-link" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Saytni Ko'rish
+            </a>
+            <a href="{{ url_for('admin_change_password') }}" class="sidebar-link">
+                <i class="fas fa-lock"></i> Parol O'zgartirish
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    {{ session.get('admin_username', 'A')[0].upper() }}
+                </div>
+                <div>
+                    <div class="user-name">{{ session.get('admin_username', 'Admin') }}</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-danger btn-sm btn-full">
+                <i class="fas fa-sign-out-alt"></i> Chiqish
+            </a>
+        </div>
+    </aside>
+
+    <!-- ═══ MAIN ═══ -->
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <div class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</div>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-outline btn-sm" target="_blank">
+                    <i class="fas fa-eye"></i> Preview
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'success' if category == 'success' else ('error' if category == 'error' else 'info') }}">
+                <i class="fas fa-{{ 'check-circle' if category == 'success' else ('exclamation-circle' if category == 'error' else 'info-circle') }}"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

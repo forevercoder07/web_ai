@@ -1,0 +1,52 @@
+{% extends 'admin/base.html' %}
+{% block title %}Messages{% endblock %}
+{% block topbar_title %}Xabarlar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-title">// MESSAGES</div>
+        <div class="page-subtitle">Jami {{ messages|length }} ta xabar</div>
+    </div>
+</div>
+
+{% if messages %}
+{% for msg in messages %}
+<div class="message-card">
+    <div class="message-header">
+        <div>
+            <div class="message-from">
+                <i class="fas fa-user-circle" style="color:var(--neon-purple); margin-right:6px"></i>
+                {{ msg.name }}
+            </div>
+            <div class="message-email">
+                <i class="fas fa-envelope" style="margin-right:6px"></i>
+                <a href="mailto:{{ msg.email }}">{{ msg.email }}</a>
+            </div>
+        </div>
+        <div style="text-align:right">
+            <div class="message-date">{{ msg.created_at.strftime('%d.%m.%Y') }}</div>
+            <div class="message-date">{{ msg.created_at.strftime('%H:%M') }}</div>
+        </div>
+    </div>
+    <p class="message-text">{{ msg.message }}</p>
+    <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+        <a href="mailto:{{ msg.email }}" class="btn btn-outline btn-sm">
+            <i class="fas fa-reply"></i> Javob berish
+        </a>
+        <form id="del_msg_{{ msg.id }}" method="POST" action="{{ url_for('admin_delete_message', id=msg.id) }}">
+            <button type="button" class="btn btn-danger btn-sm"
+                    onclick="confirmDelete('del_msg_{{ msg.id }}', 'Xabar o\'chirilsinmi?')">
+                <i class="fas fa-trash"></i> O'chirish
+            </button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div style="text-align:center; padding:4rem; color:var(--text-secondary)">
+    <i class="fas fa-inbox" style="font-size:3rem; margin-bottom:1rem; color:var(--neon-cyan); display:block"></i>
+    Hali xabarlar yo'q
+</div>
+{% endif %}
+{% endblock %}

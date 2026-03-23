@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ about.name if about else 'Portfolio' }} | Developer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="#home" class="nav-logo">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">{{ (about.name.split()[0] if about and about.name else 'DEV').upper() }}</span>
+            <span class="logo-bracket">]</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+            <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+            <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
+            <li><a href="#projects" class="nav-link" data-section="projects">Projects</a></li>
+            <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ═══════════════════ HERO SECTION ═══════════════════ -->
+<section class="hero" id="home">
+    <canvas id="matrix-canvas"></canvas>
+    <div class="hero-grid-overlay"></div>
+
+    <div class="hero-content">
+        <div class="hero-status">
+            <span class="status-dot"></span>
+            <span class="status-text">SYSTEM ONLINE</span>
+        </div>
+
+        <h1 class="hero-title">
+            <span class="hero-greeting">Hello, I'm</span>
+            <span class="hero-name glitch-text" data-text="{{ about.name if about else 'Your Name' }}">
+                {{ about.name if about else 'Your Name' }}
+            </span>
+        </h1>
+
+        <div class="hero-role">
+            <span class="role-prefix">&gt; </span>
+            <span class="typewriter" id="typewriter"></span>
+            <span class="cursor-blink">_</span>
+        </div>
+
+        <p class="hero-description">
+            {{ about.content[:150] + '...' if about and about.content and about.content|length > 150 else (about.content if about else 'Full Stack Developer — zamonaviy texnologiyalar bilan ajoyib narsalar yarataman.') }}
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#projects" class="btn btn-primary">
+                <i class="fas fa-code"></i> Loyihalarim
+            </a>
+            <a href="#contact" class="btn btn-outline">
+                <i class="fas fa-paper-plane"></i> Bog'lanish
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-num">{{ projects|length }}+</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">{{ skill_categories|length }}+</span>
+                <span class="stat-label">Skills</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">∞</span>
+                <span class="stat-label">Passion</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-indicator">
+        <div class="scroll-arrow">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <span>Scroll</span>
+    </div>
+</section>
+
+<!-- ═══════════════════ ABOUT SECTION ═══════════════════ -->
+<section class="section about-section" id="about">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <span class="section-tag">// about_me.py</span>
+            <h2 class="section-title">Men <span class="highlight">Haqimda</span></h2>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-image-wrap reveal">
+                <div class="about-image-frame">
+                    <div class="frame-corner tl"></div>
+                    <div class="frame-corner tr"></div>
+                    <div class="frame-corner bl"></div>
+                    <div class="frame-corner br"></div>
+                    {% if about and about.avatar and about.avatar != 'default_avatar.png' %}
+                        <img src="{{ url_for('static', filename='uploads/' + about.avatar) }}" alt="{{ about.name }}" class="about-avatar">
+                    {% else %}
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                    {% endif %}
+                    <div class="image-scan-line"></div>
+                </div>
+            </div>
+
+            <div class="about-content reveal">
+                <h3 class="about-name">
+                    {% if about %}{{ about.name }}{% else %}Your Name{% endif %}
+                </h3>
+                <p class="about-role">
+                    {% if about %}{{ about.title }}{% else %}Full Stack Developer{% endif %}
+                </p>
+
+                <div class="about-text">
+                    <p>{% if about %}{{ about.content }}{% else %}Ma'lumot kiritilmagan{% endif %}</p>
+                </div>
+
+                <div class="about-info-grid">
+                    {% if about %}
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ about.location }}</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ about.email }}</span>
+                    </div>
+                    {% if about.github %}
+                    <div class="info-item">
+                        <i class="fab fa-github"></i>
+                        <a href="{{ about.github }}" target="_blank">GitHub</a>
+                    </div>
+                    {% endif %}
+                    {% if about.telegram %}
+                    <div class="info-item">
+                        <i class="fab fa-telegram"></i>
+                        <a href="{{ about.telegram }}" target="_blank">Telegram</a>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="about-social">
+                    {% if about %}
+                    {% if about.github %}<a href="{{ about.github }}" class="social-btn" target="_blank"><i class="fab fa-github"></i></a>{% endif %}
+                    {% if about.linkedin %}<a href="{{ about.linkedin }}" class="social-btn" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+                    {% if about.telegram %}<a href="{{ about.telegram }}" class="social-btn" target="_blank"><i class="fab fa-telegram"></i></a>{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ SKILLS SECTION ═══════════════════ -->
+<section class="section skills-section" id="skills">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <span class="section-tag">// skills.json</span>
+            <h2 class="section-title">Ko'nikmalarim <span class="highlight">Skills</span></h2>
+        </div>
+
+        {% if skill_categories %}
+        {% for category, skills in skill_categories.items() %}
+        <div class="skill-category reveal">
+            <h3 class="category-title">
+                <span class="cat-bracket">[</span>
+                {{ category }}
+                <span class="cat-bracket">]</span>
+            </h3>
+            <div class="skills-grid">
+                {% for skill in skills %}
+                <div class="skill-card" data-level="{{ skill.level }}">
+                    <div class="skill-header">
+                        <span class="skill-name">{{ skill.name }}</span>
+                        <span class="skill-percent">{{ skill.level }}%</span>
+                    </div>
+                    <div class="skill-bar">
+                        <div class="skill-fill" style="width: 0%" data-target="{{ skill.level }}"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="no-data">Ko'nikmalar hali kiritilmagan</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ═══════════════════ PROJECTS SECTION ═══════════════════ -->
+<section class="section projects-section" id="projects">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <span class="section-tag">// projects.db</span>
+            <h2 class="section-title">Loyihalarim <span class="highlight">Projects</span></h2>
+        </div>
+
+        {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+            <div class="project-card reveal">
+                <div class="card-image">
+                    {% if project.image and project.image != 'default_project.png' %}
+                        <img src="{{ url_for('static', filename='uploads/' + project.image) }}" alt="{{ project.title }}">
+                    {% else %}
+                        <div class="default-project-img">
+                            <i class="fas fa-code"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-overlay">
+                        <div class="overlay-links">
+                            {% if project.link %}
+                            <a href="{{ project.link }}" class="overlay-btn" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </a>
+                            {% endif %}
+                            {% if project.github_link %}
+                            <a href="{{ project.github_link }}" class="overlay-btn" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">{{ project.title }}</h3>
+                    <p class="card-desc">{{ project.description[:120] }}{{ '...' if project.description|length > 120 }}</p>
+                    {% if project.tech_stack %}
+                    <div class="card-tags">
+                        {% for tech in project.get_tech_list()[:4] %}
+                        <span class="tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data-block">
+            <i class="fas fa-folder-open"></i>
+            <p>Loyihalar hali kiritilmagan</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ═══════════════════ CONTACT SECTION ═══════════════════ -->
+<section class="section contact-section" id="contact">
+    <div class="section-container">
+        <div class="section-header reveal">
+            <span class="section-tag">// contact.send()</span>
+            <h2 class="section-title">Bog'lanish <span class="highlight">Contact</span></h2>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-info reveal">
+                <h3>Muloqotga tayyorman</h3>
+                <p>Loyiha bo'yicha hamkorlik yoki savol-javob uchun menga yozing. Tez orada javob beraman!</p>
+
+                <div class="contact-details">
+                    {% if about %}
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <span class="contact-label">Email</span>
+                            <span class="contact-val">{{ about.email }}</span>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <span class="contact-label">Location</span>
+                            <span class="contact-val">{{ about.location }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="contact-form-wrap reveal">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label class="form-label">Ismingiz</label>
+                        <input type="text" name="name" class="form-input" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-input" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Xabar</label>
+                        <textarea name="message" class="form-input form-textarea" placeholder="Xabaringizni yozing..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Yuborish
+                    </button>
+                    <div class="form-message" id="formMessage"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="footer">
+    <div class="footer-content">
+        <p>
+            <span class="footer-bracket">&lt;</span>
+            Made with <i class="fas fa-heart" style="color: var(--neon-pink)"></i> by
+            <span class="highlight">{{ about.name if about else 'Developer' }}</span>
+            <span class="footer-bracket">/&gt;</span>
+        </p>
+        <p class="footer-copy">© {{ 2024 }} — All Rights Reserved</p>
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

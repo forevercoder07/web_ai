@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: radial-gradient(ellipse at 30% 50%, rgba(0,245,255,0.04) 0%, transparent 60%),
+                           radial-gradient(ellipse at 70% 50%, rgba(191,0,255,0.04) 0%, transparent 60%), #050810; }
+    </style>
+</head>
+<body>
+<div class="login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <h1>⌗ ADMIN</h1>
+            <p>// Portfolio Control Panel</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else ('error' if category == 'error' else 'info') }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> Username</label>
+                <input type="text" name="username" class="form-control"
+                       placeholder="admin" required autofocus>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" name="password" class="form-control"
+                       placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:0.5rem">
+                <i class="fas fa-sign-in-alt"></i> Kirish
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.5rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--text-secondary);">
+            <a href="{{ url_for('index') }}" style="color:var(--text-secondary)">
+                <i class="fas fa-arrow-left"></i> Saytga qaytish
+            </a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

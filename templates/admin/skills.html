@@ -1,0 +1,145 @@
+{% extends 'admin/base.html' %}
+{% block title %}Skills{% endblock %}
+{% block topbar_title %}Skills{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="page-title">// SKILLS</div>
+        <div class="page-subtitle">{{ skills|length }} ta ko'nikma</div>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 360px 1fr; gap:2rem; align-items:start;">
+
+    <!-- Add skill form -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">// YANGI_QO'SHISH</span>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label class="form-label">Ko'nikma nomi</label>
+                    <input type="text" name="name" class="form-control" placeholder="Python" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kategoriya</label>
+                    <select name="category" class="form-control">
+                        <option>Backend</option>
+                        <option>Frontend</option>
+                        <option>Database</option>
+                        <option>DevOps</option>
+                        <option>Tools</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Daraja</label>
+                    <div class="range-wrap">
+                        <input type="range" name="level" id="level" class="form-control-range"
+                               min="0" max="100" value="75">
+                        <span class="range-value" id="level_display">75%</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-plus"></i> Qo'shish
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Skills list -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">// SKILLS_LIST</span>
+        </div>
+        {% if skills %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nomi</th>
+                        <th>Kategoriya</th>
+                        <th>Daraja</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for skill in skills %}
+                    <tr>
+                        <td><strong>{{ skill.name }}</strong></td>
+                        <td>
+                            <span style="font-family:var(--font-mono); font-size:0.72rem; padding:3px 8px;
+                                  border:1px solid var(--border-dim); border-radius:4px; color:var(--text-secondary)">
+                                {{ skill.category }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="level-bar-wrap">
+                                <div class="level-bar">
+                                    <div class="level-fill" style="width:{{ skill.level }}%"></div>
+                                </div>
+                                <span class="level-text">{{ skill.level }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="td-actions">
+                                <button class="btn btn-warning btn-sm" onclick="editSkill({{ skill.id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <form id="del_skill_{{ skill.id }}" method="POST"
+                                      action="{{ url_for('admin_delete_skill', id=skill.id) }}">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('del_skill_{{ skill.id }}', '\"{{ skill.name }}\" o\'chirilsinmi?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Inline edit row -->
+                    <tr class="skill-edit-row" data-id="{{ skill.id }}" style="display:none; background: rgba(0,245,255,0.02);">
+                        <td colspan="4">
+                            <div class="inline-grid" style="padding: 0.75rem">
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label">Nomi</label>
+                                    <input type="text" id="skill_name_{{ skill.id }}" class="form-control"
+                                           value="{{ skill.name }}">
+                                </div>
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label">Kategoriya</label>
+                                    <input type="text" id="skill_category_{{ skill.id }}" class="form-control"
+                                           value="{{ skill.category }}">
+                                </div>
+                                <div class="form-group" style="margin:0">
+                                    <label class="form-label">Daraja</label>
+                                    <div class="range-wrap">
+                                        <input type="range" id="skill_level_{{ skill.id }}" class="form-control-range"
+                                               min="0" max="100" value="{{ skill.level }}">
+                                        <span class="range-value" id="skill_level_{{ skill.id }}_display">{{ skill.level }}%</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:0.5rem; align-items:flex-end; padding-bottom:0.1rem">
+                                    <button class="btn btn-primary btn-sm" onclick="saveSkill({{ skill.id }})">
+                                        <i class="fas fa-save"></i> Saqlash
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="editSkill({{ skill.id }})">
+                                        Yopish
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="card-body" style="text-align:center; color:var(--text-secondary)">
+            Hali ko'nikmalar qo'shilmagan
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

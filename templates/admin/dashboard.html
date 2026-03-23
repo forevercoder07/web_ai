@@ -1,0 +1,97 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-number" style="color: var(--neon-cyan)">{{ stats.projects }}</div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat-icon cyan"><i class="fas fa-code"></i></div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-number" style="color: var(--neon-purple)">{{ stats.skills }}</div>
+                <div class="stat-label">Skills</div>
+            </div>
+            <div class="stat-icon purple"><i class="fas fa-chart-bar"></i></div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-number" style="color: var(--neon-green)">{{ stats.messages }}</div>
+                <div class="stat-label">Messages</div>
+            </div>
+            <div class="stat-icon green"><i class="fas fa-envelope"></i></div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card-header">
+            <div>
+                <div class="stat-number" style="color: var(--neon-pink)">{{ stats.unread }}</div>
+                <div class="stat-label">Unread</div>
+            </div>
+            <div class="stat-icon pink"><i class="fas fa-bell"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card" style="margin-bottom:2rem">
+    <div class="card-header">
+        <span class="card-title">// QUICK_ACTIONS</span>
+    </div>
+    <div class="card-body">
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="{{ url_for('admin_add_project') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yangi Loyiha
+            </a>
+            <a href="{{ url_for('admin_skills') }}" class="btn btn-outline">
+                <i class="fas fa-plus"></i> Ko'nikma Qo'sh
+            </a>
+            <a href="{{ url_for('admin_about') }}" class="btn btn-outline">
+                <i class="fas fa-edit"></i> About Tahrirlash
+            </a>
+            <a href="{{ url_for('admin_messages') }}" class="btn btn-outline">
+                <i class="fas fa-envelope"></i> Xabarlar
+                {% if stats.unread > 0 %}
+                <span class="badge">{{ stats.unread }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent messages -->
+{% if recent_messages %}
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">// SO'NGI_XABARLAR</span>
+        <a href="{{ url_for('admin_messages') }}" class="btn btn-outline btn-sm">Barchasi</a>
+    </div>
+    <div class="card-body">
+        {% for msg in recent_messages %}
+        <div class="message-card">
+            <div class="message-header">
+                <div>
+                    {% if not msg.is_read %}
+                    <span class="unread-dot"></span>
+                    {% endif %}
+                    <span class="message-from">{{ msg.name }}</span>
+                    <div class="message-email">{{ msg.email }}</div>
+                </div>
+                <div class="message-date">{{ msg.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            </div>
+            <p class="message-text">{{ msg.message[:120] }}{{ '...' if msg.message|length > 120 }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
